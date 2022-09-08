@@ -1,0 +1,15 @@
+{
+  "eslint.format.enable": false,
+  "files.eol": "\n",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+  "[typescript]": {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+  },
+  "editor.minimap.maxColumn": 150,
+  "html.format.wrapLineLength": 150,
+  "cSpell.words": [
+    "reduxjs"
+  ],
+  "editor.tabSize": 2,
+}
