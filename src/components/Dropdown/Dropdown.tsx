@@ -1,11 +1,11 @@
-import { Checkbox } from '@mui/material';
+import { Checkbox, InputLabel } from '@mui/material';
 import { FC, useState } from 'react';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import { InputLabelStyled, OutlinedInputStyled } from './styled/Dropdown.styled';
+import useStyles from './styled/Dropdown.styled';
 import { DropdownProps } from './Dropdown.types';
 import { SelectInputProps } from '@mui/material/Select/SelectInput';
 
@@ -23,6 +23,7 @@ const MenuProps = {
 };
 
 const Dropdown: FC<DropdownProps> = (props) => {
+  const classes = useStyles();
   const [ entityTypes, setEntityTypes ] = useState<string[]>(props.value || []);
   const handleChange: SelectInputProps<string[]>['onChange'] = (event, child) => {
     const {
@@ -31,27 +32,19 @@ const Dropdown: FC<DropdownProps> = (props) => {
     setEntityTypes(typeof value === 'string' ? value.split(',') : value);
     if (props.onChange) props.onChange(event, child);
   };
+
   return (
     <>
       <FormControl>
-        <InputLabelStyled id="multiple-checkbox-label">Entity Types</InputLabelStyled>
+        <InputLabel id="multiple-checkbox-label" className={classes.label}>Entity Types</InputLabel>
         <Select
           labelId="multiple-checkbox-label"
           id="multiple-checkbox"
           multiple
-          sx={{
-            '&> .MuiSelect-select': {
-              color: '#fff',
-              paddingTop: '12px',
-              paddingBottom: '12px',
-            },
-            '&> .MuiSelect-select > fieldset': {
-              borderColor: '#313132 !important',
-            },
-          }}
+          className={classes.select}
           value={entityTypes}
           onChange={handleChange}
-          input={<OutlinedInputStyled label="Entity" />}
+          input={<OutlinedInput className={classes.outline} label="Entity" />}
           renderValue={(selected) => selected.join(', ')}
           MenuProps={MenuProps}
         >

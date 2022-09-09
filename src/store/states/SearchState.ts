@@ -44,6 +44,7 @@ export interface ITunesResult {
   collectionArtistId?: number;
   collectionArtistName?: string;
   collectionArtistViewUrl?: string;
+  description?: string;
 }
 
 export interface ITunesData {

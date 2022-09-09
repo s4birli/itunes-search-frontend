@@ -1,5 +1,6 @@
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material/styles';
+import { fontSize } from '@mui/system';
 
 
 declare module '@mui/styles/defaultTheme' {
@@ -51,9 +52,12 @@ const useStyles = makeStyles(theme => ({
     '&:not(:first-of-type)': {
       marginLeft: theme.spacing(1),
     }
+  },
+  notFound: {
+    marginTop: theme.spacing(10),
+    marginLeft: theme.spacing(2),
+    fontSize: 'xx-large'
   }
 }));
-
-
 
 export { useStyles };

@@ -1,17 +1,15 @@
 import { FC, useEffect, useState } from 'react';
-import { Box, Toolbar } from '@mui/material';
-
 import Search from '../Search';
 import Dropdown from '../Dropdown';
-import { OutBoxStyled, AppBarStyled, InBoxStyled } from './styled/Header.styled';
+import { AppBarStyled, OutBoxStyled, InBoxStyled } from './styled/Header.styled';
+import { Toolbar } from '@mui/material';
 import { useAppDispatch, useAppSelector, newSearch, searchRenewed, SearchEntityParameter } from '../../store';
-import InputBase from '@mui/material/InputBase';
 
 const Header: FC = () => {
   const dispatch = useAppDispatch();
   const search = useAppSelector((state) => state.search);
-  const [ term, setTerm ] = useState(search.term);
   const [ entity, setEntity ] = useState(search.entity as string[]);
+  const [ term, setTerm ] = useState(search.term);
 
   useEffect(() => {
     if (!term || !(entity && entity.length > 0)) {
@@ -44,7 +42,7 @@ const Header: FC = () => {
   };
 
   return (
-    <>
+    <div>
       <AppBarStyled>
         <Toolbar>
           <OutBoxStyled>
@@ -60,8 +58,9 @@ const Header: FC = () => {
           </OutBoxStyled>
         </Toolbar>
       </AppBarStyled>
-    </>
+    </div>
   );
 };
 
 export default Header;
+

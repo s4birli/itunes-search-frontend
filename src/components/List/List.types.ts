@@ -1,1 +1,2 @@
-export interface ListTypeProps {}
+export interface ListTypeProps {
+}
