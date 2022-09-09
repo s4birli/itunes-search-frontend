@@ -5,7 +5,7 @@ import API from '../httpService';
 
 const limit = 10;
 
-interface IRecord {
+export interface ITunesResult {
   wrapperType?: string;
   kind?: string;
   artistId?: number;
@@ -46,17 +46,17 @@ interface IRecord {
   collectionArtistViewUrl?: string;
 }
 
-export interface IAPIResult {
-  resultCount?: number;
-  results?: IRecord[];
+export interface ITunesData {
+  resultCount: number;
+  results: ITunesResult[];
 }
 
 export type SearchEntityParameter = ('musicArtist' | 'song' | 'album')[];
 
-interface ISearchState {
+export interface ISearchState {
   term?: string;
   entity?: SearchEntityParameter;
-  result: IRecord[];
+  result: ITunesResult[];
   endOfRecords: boolean;
   isLoading: boolean;
 }
@@ -78,13 +78,13 @@ const createSearchURL = (parameters: { term: string; entity: SearchEntityParamet
     parameters.offset ? '&offset=' + parameters.offset : ''
   }&sort=recent`;
 
-export const newSearch = createAsyncThunk<IAPIResult, INewSearch>('search/newSearch', async ({ term, entity }, thunkAPI) => {
+export const newSearch = createAsyncThunk<ITunesData, INewSearch>('search/newSearch', async ({ term, entity }, thunkAPI) => {
   thunkAPI.dispatch(searchRenewed({ term, entity, isLoading: true }));
-  return await API.get<IAPIResult>(createSearchURL({ term, entity }));
+  return await API.get<ITunesData>(createSearchURL({ term, entity }));
 });
 
 export const continueSearch = createAsyncThunk<
-  IAPIResult,
+  ITunesData,
   void,
   {
     dispatch: AppDispatch;
@@ -96,7 +96,7 @@ export const continueSearch = createAsyncThunk<
   const { entity, term, result } = state.search;
   if (!term || !entity || entity.length === 0 || !result) throw new Error('Search parameters not found');
 
-  return await API.get<IAPIResult>(createSearchURL({ term, entity, offset: result.length + 1 }));
+  return await API.get<ITunesData>(createSearchURL({ term, entity, offset: result.length + 1 }));
 });
 
 export const searchSlice = createSlice({
@@ -110,7 +110,7 @@ export const searchSlice = createSlice({
       state.isLoading = isLoading;
     };
 
-    const resultReceivedReducer = (state: ISearchState, action: PayloadAction<IAPIResult>) => {
+    const resultReceivedReducer = (state: ISearchState, action: PayloadAction<ITunesData>) => {
       state.result.push(...(action.payload.results || []));
       state.endOfRecords = (action.payload?.resultCount || 0) < limit;
       state.isLoading = false;
@@ -122,6 +122,6 @@ export const searchSlice = createSlice({
   },
 });
 
-const { searchRenewed } = searchSlice.actions;
+export const { searchRenewed } = searchSlice.actions;
 
 export default searchSlice.reducer;

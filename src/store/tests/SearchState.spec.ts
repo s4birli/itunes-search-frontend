@@ -1,9 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { createNewStore, AppStore } from '../configureStore';
-import { newSearch, continueSearch, searchSlice, IAPIResult } from '../states/SearchState';
+import { newSearch, continueSearch, searchSlice, ITunesData } from '../states/SearchState';
 import API from '../httpService';
-
-const limit = 10;
 
 describe('Social Tests', () => {
   let fakeAxios: MockAdapter;
@@ -17,15 +15,10 @@ describe('Social Tests', () => {
   const searchState = () => store.getState().search;
   const errorState = () => store.getState().error;
 
-  const setupAxiosResult = (recordCount: number) => {
-    const searchResult = { resultCount: recordCount, results: Array.from(Array(recordCount).keys()).map((_, i) => ({ artistId: i + 1 })) };
-    fakeAxios.onGet(/(\/search)+/).reply<IAPIResult>(200, searchResult);
-    return searchResult;
-  };
-
   describe('newSearch reducer', () => {
-    it('should save received values into the result state', async () => {
-      const searchResult = setupAxiosResult(1);
+    it('should save returned values into the result state', async () => {
+      const searchResult = { resultCount: 1, results: [ { artistId: 1 } ]};
+      fakeAxios.onGet(/(\/search)+/).reply<ITunesData>(200, searchResult);
 
       await store.dispatch(newSearch({ term: 'test', entity: [ 'song' ]}));
 
@@ -33,8 +26,9 @@ describe('Social Tests', () => {
       expect(searchState().result).toEqual(expect.arrayContaining([ expect.objectContaining(searchResult.results[0]) ]));
     });
 
-    it('should set endOfRecords to true, if received data is less than limit', async () => {
-      setupAxiosResult(1);
+    it('should set endOfRecords to true, if received data less than limit', async () => {
+      const searchResult = { resultCount: 1, results: [ { artistId: 1 } ]};
+      fakeAxios.onGet(/(\/search)+/).reply<ITunesData>(200, searchResult);
 
       await store.dispatch(newSearch({ term: 'test', entity: [ 'song' ]}));
 
@@ -42,7 +36,8 @@ describe('Social Tests', () => {
     });
 
     it('should set endOfRecords to false, if received data equals to limit', async () => {
-      setupAxiosResult(limit);
+      const searchResult = { resultCount: 10, results: new Array(10).map((_, i) => ({ artistId: i })) };
+      fakeAxios.onGet(/(\/search)+/).reply<ITunesData>(200, searchResult);
 
       await store.dispatch(newSearch({ term: 'test', entity: [ 'song' ]}));
 
@@ -50,7 +45,7 @@ describe('Social Tests', () => {
     });
 
     it('should not return error if result is not valid ', async () => {
-      fakeAxios.onGet(/(\/search)+/).reply<IAPIResult>(200, {});
+      fakeAxios.onGet(/(\/search)+/).reply<ITunesData>(200, {});
 
       await store.dispatch(newSearch({ term: 'test', entity: [ 'song' ]}));
 
@@ -69,53 +64,22 @@ describe('Social Tests', () => {
   });
 
   describe('continueSearch reducer', () => {
-    const createNewSearch = async () => {
-      setupAxiosResult(limit);
-      await store.dispatch(newSearch({ term: 'test', entity: [ 'song' ]}));
+    const initialSearchResult = {
+      resultCount: 10,
+      results: new Array(10).map((_, i) => ({ artistId: i })),
     };
 
     it('should save returned values into the result state', async () => {
-      await createNewSearch();
-      const searchResult = setupAxiosResult(1);
+      fakeAxios.onGet(/(\/search)+/).reply<ITunesData>(200, initialSearchResult);
+      await store.dispatch(newSearch({ term: 'test', entity: [ 'song' ]}));
+
+      const searchResult = { resultCount: 1, results: [ { artistId: 1000 } ]};
+      fakeAxios.onGet(/(\/search)+/).reply<ITunesData>(200, searchResult);
 
       await store.dispatch(continueSearch());
 
-      expect(searchState().result).toHaveLength(limit + 1);
+      expect(searchState().result).toHaveLength(initialSearchResult.resultCount + 1);
       expect(searchState().result).toEqual(expect.arrayContaining([ expect.objectContaining(searchResult.results[0]) ]));
-    });
-
-    it('should save error into the error state', async () => {
-      await createNewSearch();
-      const errorCode = 500;
-      fakeAxios.onGet(/(\/search)+/).reply<string>(errorCode);
-
-      await store.dispatch(continueSearch());
-
-      expect(errorState().list).toHaveLength(1);
-      expect(errorState().list[0].code).toBe(errorCode);
-    });
-
-    it('should call api with correct offset', async () => {
-      await createNewSearch();
-      const errorCode = 500;
-      fakeAxios.onGet(/(\/search)+/).reply<string>(errorCode);
-
-      await store.dispatch(continueSearch());
-
-      expect(fakeAxios.history.get.length).toBe(2);
-      const secondRequestURL = new URL(fakeAxios.history.get[1].url as string, 'https://test');
-      expect(parseInt(secondRequestURL.searchParams.get('offset') as string)).toBe(limit + 1);
-    });
-
-    it('should set endOfRecords to true, if received data less than limit', async () => {
-      await createNewSearch();
-
-      expect(searchState().endOfRecords).toBe(false);
-
-      setupAxiosResult(1);
-      await store.dispatch(continueSearch());
-
-      expect(searchState().endOfRecords).toBe(true);
     });
 
     it('should not call the api if the term is empty', async () => {
@@ -137,17 +101,58 @@ describe('Social Tests', () => {
     });
 
     it('should not return error if result is not valid ', async () => {
-      fakeAxios.onGet(/(\/search)+/).reply<IAPIResult>(200, {});
+      fakeAxios.onGet(/(\/search)+/).reply<ITunesData>(200, {});
 
       await store.dispatch(continueSearch());
 
       expect(searchState().result).toHaveLength(0);
     });
+
+    it('should save error into the error state', async () => {
+      fakeAxios.onGet(/(\/search)+/).reply<ITunesData>(200, initialSearchResult);
+      await store.dispatch(newSearch({ term: 'test', entity: [ 'song' ]}));
+
+      const errorCode = 500;
+      fakeAxios.onGet(/(\/search)+/).reply<string>(errorCode);
+
+      await store.dispatch(continueSearch());
+
+      expect(errorState().list).toHaveLength(1);
+      expect(errorState().list[0].code).toBe(errorCode);
+    });
+
+    it('should call api with correct offset', async () => {
+      fakeAxios.onGet(/(\/search)+/).reply<ITunesData>(200, initialSearchResult);
+      await store.dispatch(newSearch({ term: 'test', entity: [ 'song' ]}));
+
+      const errorCode = 500;
+      fakeAxios.onGet(/(\/search)+/).reply<string>(errorCode);
+
+      await store.dispatch(continueSearch());
+
+      expect(fakeAxios.history.get.length).toBe(2);
+      const secondRequestURL = new URL(fakeAxios.history.get[1].url as string, 'https://test');
+      expect(parseInt(secondRequestURL.searchParams.get('offset') as string)).toBe(initialSearchResult.resultCount + 1);
+    });
+
+    it('should set endOfRecords to true, if received data less than limit', async () => {
+      fakeAxios.onGet(/(\/search)+/).reply<ITunesData>(200, initialSearchResult);
+      await store.dispatch(newSearch({ term: 'test', entity: [ 'song' ]}));
+
+      expect(searchState().endOfRecords).toBe(false);
+
+      const searchResult = { resultCount: 1, results: [ { artistId: 1000 } ]};
+      fakeAxios.onGet(/(\/search)+/).reply<ITunesData>(200, searchResult);
+
+      await store.dispatch(continueSearch());
+
+      expect(searchState().endOfRecords).toBe(true);
+    });
   });
 
   describe('loading indicator', () => {
     it('should be true while fetching the search', () => {
-      fakeAxios.onGet(/(\/search)+/).reply<IAPIResult>(() => {
+      fakeAxios.onGet(/(\/search)+/).reply<ITunesData>(() => {
         expect(searchState().isLoading).toBe(true);
         return [ 200, {} ];
       });

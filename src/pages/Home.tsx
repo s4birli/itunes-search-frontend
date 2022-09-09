@@ -40,7 +40,7 @@ const Home: React.FC<HomeProps> = () => {
     <>
       <Header />
       <Body />
-      <label>
+      {/* <label>
         <Checkbox title="Songs" checked={getEntityChecked('song')} onChange={(event) => handleCheckboxes('song', event.target.checked)} />
         Songs
       </label>
@@ -60,7 +60,7 @@ const Home: React.FC<HomeProps> = () => {
       <button onClick={handleSearch}>Search </button>
       <ul>{search && search.result && search.result.map((record) => <li key={record.trackNumber}>{record.artistName}</li>)}</ul>
       {search.isLoading && <CircularProgress />}
-      {search.result && search.result.length > 0 && !search.endOfRecords && <button onClick={() => dispatch(continueSearch())}>Load more</button>}
+      {search.result && search.result.length > 0 && !search.endOfRecords && <button onClick={() => dispatch(continueSearch())}>Load more</button>} */}
     </>
   );
 };
