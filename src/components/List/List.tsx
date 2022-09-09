@@ -40,7 +40,7 @@ const List: FC<ListTypeProps> = () => {
         <CardMedia component={() => <img style={{ width: '100%' }} src={cards.artworkUrl100} />} className={classes.media} />
         <CardContent className={classes.content}>
           <Typography className={'MuiTypography--heading'} variant={'h6'} gutterBottom>
-            {cards.collectionName}
+            {cards.trackName}
           </Typography>
           <Typography
             sx={{
@@ -51,7 +51,7 @@ const List: FC<ListTypeProps> = () => {
             className={'MuiTypography--subheading'}
             variant={'caption'}
           >
-            {cards.description}
+            {cards.collectionName + ' ' + cards.artistName}
           </Typography>
           {/* <Divider className={classes.divider} light /> */}
           <CardActions>

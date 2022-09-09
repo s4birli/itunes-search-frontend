@@ -45,7 +45,7 @@ describe('Social Tests', () => {
     });
 
     it('should not return error if result is not valid ', async () => {
-      fakeAxios.onGet(/(\/search)+/).reply<ITunesData>(200, {});
+      fakeAxios.onGet(/(\/search)+/).reply(200, {});
 
       await store.dispatch(newSearch({ term: 'test', entity: [ 'song' ]}));
 
@@ -101,7 +101,7 @@ describe('Social Tests', () => {
     });
 
     it('should not return error if result is not valid ', async () => {
-      fakeAxios.onGet(/(\/search)+/).reply<ITunesData>(200, {});
+      fakeAxios.onGet(/(\/search)+/).reply(200, {});
 
       await store.dispatch(continueSearch());
 
@@ -161,7 +161,7 @@ describe('Social Tests', () => {
     });
 
     it('should be false after the results are fetched', async () => {
-      fakeAxios.onGet(/(\/search)+/).reply<IAPIResult>(200, { resultCount: 0, results: []});
+      fakeAxios.onGet(/(\/search)+/).reply<ITunesData>(200, { resultCount: 0, results: []});
 
       await store.dispatch(newSearch({ term: 'test', entity: [ 'song' ]}));
 
