@@ -8,8 +8,11 @@
   },
   "editor.minimap.maxColumn": 150,
   "html.format.wrapLineLength": 150,
-  "cSpell.words": [
-    "reduxjs"
-  ],
+  "cSpell.words": ["reduxjs"],
   "editor.tabSize": 2,
+  "vitest.enable": false,
+  "testing.autoRun.mode": "rerun",
+  "jest.testExplorer": {
+    "enabled": true
+  }
 }
