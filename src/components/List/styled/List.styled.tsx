@@ -1,63 +1,62 @@
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material/styles';
-import { fontSize } from '@mui/system';
-
 
 declare module '@mui/styles/defaultTheme' {
-    interface DefaultTheme extends Theme {}
+  interface DefaultTheme extends Theme {}
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    justifyContent: 'initial'
+    justifyContent: 'initial',
   },
   title: {
-    marginBottom: '30px'
+    marginBottom: '30px',
   },
   header: {
     marginBottom: '20px',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   card: {
-    maxWidth: 300,
-    // margin: 'auto',
+    width: 300,
+    maxWidth: '100vw',
     transition: '0.3s',
     boxShadow: '0 8px 40px -12px rgba(0,0,0,0.3)',
     '&:hover': {
-      boxShadow: '0 16px 70px -12.125px rgba(0,0,0,0.3)'
-    }
+      boxShadow: '0 16px 70px -12.125px rgba(0,0,0,0.3)',
+    },
   },
   media: {
-    paddingTop: '56.25%'
+    paddingTop: '56.25%',
+    minHeight: 300,
   },
   content: {
     textAlign: 'left',
-    padding: theme.spacing(1)
+    padding: theme.spacing(1),
   },
   divider: {
-    margin: theme.spacing(1)
+    margin: theme.spacing(1),
   },
   heading: {
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   subheading: {
-    lineHeight: 1.8
+    lineHeight: 1.8,
   },
   avatar: {
     display: 'inline-block',
     border: '2px solid white',
     '&:not(:first-of-type)': {
       marginLeft: theme.spacing(1),
-    }
+    },
   },
   notFound: {
     marginTop: theme.spacing(10),
     marginLeft: theme.spacing(2),
-    fontSize: 'xx-large'
-  }
+    fontSize: 'xx-large',
+  },
 }));
 
 export { useStyles };
