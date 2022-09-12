@@ -1,12 +1,8 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import List from '../../components/List';
 
 const Body: FC = () => {
-  return (
-    <List />
-  );
+  return <List />;
 };
-
-
 
 export default Body;

@@ -29,10 +29,10 @@ const Header: FC = () => {
     lastChangedValue = value;
     if (!intervalId)
       intervalId = window.setInterval(() => {
-        if (lastTermChanged + 3000 < Date.now()) {
+        if (lastTermChanged + 1000 < Date.now()) {
           setTermState(lastChangedValue);
         }
-      }, 1000);
+      }, 500);
   };
 
   const setTermState = (value: string) => {
@@ -50,7 +50,7 @@ const Header: FC = () => {
               <Search
                 onChange={(event) => handleTermChange(event.target.value)}
                 onKeyDown={(event) => {
-                  if (event.key === 'Enter') setTermState((event.target as any).value);
+                  if (event.key === 'Enter') setTermState((event.target as HTMLInputElement).value);
                 }}
               />
               <Dropdown value={entity} onChange={(event) => setEntity(event.target.value as string[])} />
@@ -63,4 +63,3 @@ const Header: FC = () => {
 };
 
 export default Header;
-
