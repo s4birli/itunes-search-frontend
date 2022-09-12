@@ -1,15 +1,17 @@
 import { Card, CardMedia, Grid, CardContent, Typography, Link, Divider, CardActions, CircularProgress } from '@mui/material';
 import { FC, useState } from 'react';
+import { useStore } from 'react-redux';
 import { useStyles } from './styled/List.styled';
-import { store, useAppDispatch, continueSearch, ISearchState } from '../../store';
+import { useAppDispatch, continueSearch, ISearchState, RootState } from '../../store';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Box } from '@mui/system';
 import { ListTypeProps } from './List.types';
 import { ITunesResult } from '../../store';
 
 const List: FC<ListTypeProps> = () => {
+  const store = useStore<RootState>();
   const dispatch = useAppDispatch();
-  const [ searchState, setSearchState ] = useState<ISearchState | null>(null);
+  const [ searchState, setSearchState ] = useState<ISearchState | null>(store.getState().search);
 
   store.subscribe(() => {
     setSearchState(store.getState().search);
@@ -65,6 +67,7 @@ const List: FC<ListTypeProps> = () => {
           }
         >
           <Grid
+            key="1"
             sx={{
               marginTop: '50px',
               padding: 4,

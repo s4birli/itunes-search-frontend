@@ -22,12 +22,12 @@ const theme = createTheme({
   },
 });
 
-export const createRenderWrapper = (store: EnhancedStore) => {
+export const createRenderWrapper = (costumeStore: EnhancedStore) => {
   const AllTheProviders: FC<{ children: React.ReactNode }> = ({ children }) => {
     return (
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
-          <Provider store={store}>
+          <Provider store={costumeStore}>
             <CssBaseline />
             {children}
           </Provider>
