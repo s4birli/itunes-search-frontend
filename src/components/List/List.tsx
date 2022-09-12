@@ -1,4 +1,4 @@
-import { Card, CardMedia, Grid, CardContent, Typography, Link, Divider, CardActions, Button, CircularProgress } from '@mui/material';
+import { Card, CardMedia, Grid, CardContent, Typography, Link, Divider, CardActions, CircularProgress } from '@mui/material';
 import { FC, useState } from 'react';
 import { useStyles } from './styled/List.styled';
 import { store, useAppDispatch, continueSearch, ISearchState } from '../../store';
@@ -16,7 +16,11 @@ const List: FC<ListTypeProps> = () => {
   });
   const isSearchNotFound = () =>
     searchState &&
-    searchState.result.length === 0;
+    searchState.result.length === 0 &&
+    searchState.term &&
+    searchState.entity &&
+    searchState.entity.length > 0 &&
+    !searchState.isLoading;
 
   let loadMoreIsStarted = false;
   const handleLoadMore = () => {
@@ -84,7 +88,6 @@ const List: FC<ListTypeProps> = () => {
       )}
 
       {isSearchNotFound() && <div className={classes.notFound}>Not found!</div>}
-      {searchState?.isLoading && <CircularProgress />}
     </>
   );
 };
